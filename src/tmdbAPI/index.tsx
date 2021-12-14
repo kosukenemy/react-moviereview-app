@@ -6,6 +6,7 @@ const genreUrl = `https://api.themoviedb.org/3/genre/movie/list${APIQuery}${API_
 const movieWithGenreURL = "https://api.themoviedb.org/3/discover/movie" + APIQuery + API_KEY + GenreQuery;
 
 
+
 export const getMovieGenres = async() => {
     try {
         const { data } = await axios.get(genreUrl, {

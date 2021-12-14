@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import './App.css';
+import style from "../src/css/app.module.css";
 import { getMovieGenres } from '../src/tmdbAPI';
 import { getGenresQueryMovie } from '../src/tmdbAPI';
 
@@ -14,39 +14,45 @@ type Genre = {
 
 type GenreMovie = {
   id: string;
+  original_title?: string;
+  title: string;
   overview: string;
-  original_title: string;
-  backdrop_path: string;
+  popularity?: string;
   poster_path: string;
-  vote_average: number;
-  vote_count: number;
+  release_date?: string;
+  vote_average?: string;
+  vote_count?:string;
   likedCount?: number;
 }
 
+
 function App() {
+
   const initialGenreName:initialGenre = { Action: 28 };
   const initialGenreId:initialGenre = { type: initialGenreName.initialGenreId };
   const [genres, setGenres] = useState<Genre[]>([]);
   const [genresMovie, setGenreMovie] = useState<GenreMovie[]>([]);
+
   const fetchAPI = async() => {
     setGenres(await getMovieGenres());
     setGenreMovie( await getGenresQueryMovie(initialGenreId.type));
   }
 
-  console.log(genresMovie)
+  useEffect(() => {
+    fetchAPI();
+  }, []);
 
-  useEffect(() => { fetchAPI() }, []);
-
+  
 
   const handleGenreType = async(genreId:string) => {
-    initialGenreId.type = genreId;
-    return fetchAPI();
+    setGenreMovie( await getGenresQueryMovie(genreId));
   }
 
+
   return (
-    <div className="App">
+    <div className={style.pageContainer}>
       <div className="sideBar">
-        <ul className="sideMenu">
+        <ul className={style.sideMenu}>
         {genres.map((genre, index) => {
           return (
               <li key={index} className="sideMenu-list">
@@ -57,7 +63,24 @@ function App() {
         })}
         </ul>
       </div>
-      <div className="main">main</div>
+      <div className="main">
+        <ul className="movieList">
+          <div className="loader"></div>
+        {genresMovie.map((movie, index) => {
+          return (
+            <li key={index}>
+              <figure>
+                <img src={`https://image.tmdb.org/t/p/original/${movie.poster_path}`} alt={movie.title} />
+                <figcaption>
+                  <dd>{movie.title}</dd>
+                  <dt></dt>
+                </figcaption>
+              </figure>
+            </li>    
+          )
+        })}
+        </ul>
+      </div>
     </div>
   );
 }
