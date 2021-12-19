@@ -2,6 +2,10 @@ import { useState, useEffect } from 'react';
 import style from "../src/css/app.module.css";
 import { getMovieGenres } from '../src/tmdbAPI';
 import { getGenresQueryMovie } from '../src/tmdbAPI';
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState } from './store';
+import { searchKeyword } from './store/searchKeyword/action';
+import { keyWordSearch } from './tmdbAPI/index'
 
 type initialGenre = {
   [key: string]: any;
@@ -25,9 +29,6 @@ type GenreMovie = {
   likedCount?: number;
 };
 
-export const inputKeyWord:any = {
-    value: undefined
-}
 
 function App() {
 
@@ -49,29 +50,48 @@ function App() {
 
   const handleGenreType = async(genreId:string, genreName:any) => {
     setMovies( await getGenresQueryMovie(genreId));
-    SetSelectedGenre( genreName)
+    SetSelectedGenre(genreName);
   }
 
-  const handleKeyWordSearch = (value:string) => {
-    inputKeyWord.value = value;
+
+
+  // reducxから呼び出し
+  const inputValueState:any = useSelector((state: RootState) => state.inputValue);
+  // stateを更新
+  const dispatch = useDispatch();
+
+
+  const handleKeyWordSearch = (inputValue:string) => {
+    inputValueState.value = inputValue;
   }
 
+  const handleSubmit = () => {
+    dispatch(searchKeyword() );
+    console.log(inputValueState)
+    // 検索APIに引数を渡す
+    keyWordSearch(inputValueState.value)
+  }
 
   return (
     <div className={style.pageContainer}>
       <div className="sideBar">
         <label className="keywordSearch">
           <input onChange={ (event) => { handleKeyWordSearch(event.currentTarget.value) } } 
-          type="text" id="" 
+          type="text"
           />
-          <button>search</button>
+          <button onClick={handleSubmit}>search</button>
+          <p>{inputValueState.value}</p>
         </label>
         <ul className={style.sideMenu}>
         {genres.map((genre, index) => {
           return (
               <li key={index} className="sideMenu-list">
-                <button onClick={ (event) => handleGenreType(event.currentTarget.id, event.currentTarget.textContent) } 
-                id={genre.id}>{genre.name}</button>
+                <button 
+                onClick={ (event) => handleGenreType(event.currentTarget.id, event.currentTarget.textContent) } 
+                id={genre.id}
+                >
+                  {genre.name}
+                </button>
               </li>
           )
         })}
@@ -80,19 +100,19 @@ function App() {
       <div className="main">
         <ul className={style.movieList}>
           <h3 className="selectedGenreTitle">{selectedGenre}</h3>
-        {movies.map((movie, index) => {
-          return (
-            <li key={index}>
-              <figure>
-                <img src={`https://image.tmdb.org/t/p/original/${movie.poster_path}`} alt={movie.title} />
-                <figcaption>
-                  <dd>{movie.title}</dd>
-                  <dt></dt>
-                </figcaption>
-              </figure>
-            </li>    
-          )
-        })}
+          {movies.map((movie, index) => {
+            return (
+              <li key={index}>
+                <figure>
+                  <img src={`https://image.tmdb.org/t/p/original/${movie.poster_path}`} alt={movie.title} />
+                  <figcaption>
+                    <dd>{movie.title}</dd>
+                    <dt></dt>
+                  </figcaption>
+                </figure>
+              </li>    
+            )
+          })}
         </ul>
       </div>
     </div>
