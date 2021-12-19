@@ -5,14 +5,14 @@ const KeyWordQuery = "&query="
 const GenreQuery = "&with_genres=";
 const genreUrl = `https://api.themoviedb.org/3/genre/movie/list${APIQuery}${API_KEY}`;
 const movieWithGenreURL = "https://api.themoviedb.org/3/discover/movie" + APIQuery + API_KEY + GenreQuery;
+const movieWithKeyWords = "https://api.themoviedb.org/3/search/movie" + APIQuery + API_KEY + KeyWordQuery;
 
 
 
 export const keyWordSearch = async(inputVal:string) => {
-    const movieWithKeyWords = "https://api.themoviedb.org/3/search/movie" + APIQuery + API_KEY + KeyWordQuery + inputVal;
 
     try {
-        const { data } = await axios.get(movieWithKeyWords, {
+        const { data } = await axios.get(`${movieWithKeyWords} + ${inputVal}`, {
             params: {
                 api_key: API_KEY,
                 language: 'en',
@@ -32,7 +32,6 @@ export const keyWordSearch = async(inputVal:string) => {
             vote_average: g['vote_average'],
             vote_count: g['vote_count']
         }));
-        console.log(modifiedData, "keyWord")
         return modifiedData;
     } catch (error) { }
 }

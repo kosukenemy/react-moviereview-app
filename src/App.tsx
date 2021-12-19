@@ -37,6 +37,7 @@ function App() {
   const [genres, setGenres] = useState<Genre[]>([]);
   const [movies, setMovies] = useState<GenreMovie[]>([]);
   const [selectedGenre, SetSelectedGenre] = useState<Object>(Object.keys(initialGenreName));
+  const [inputSearch, setInputSearch] = useState<boolean>(false);
 
   const fetchAPI = async() => {
     setGenres( await getMovieGenres());
@@ -65,11 +66,12 @@ function App() {
     inputValueState.value = inputValue;
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = async() => {
     dispatch(searchKeyword() );
-    console.log(inputValueState)
     // 検索APIに引数を渡す
-    keyWordSearch(inputValueState.value)
+    setMovies(await keyWordSearch(inputValueState.value) );
+    setInputSearch(true)
+    console.log(inputSearch)
   }
 
   return (
@@ -80,7 +82,6 @@ function App() {
           type="text"
           />
           <button onClick={handleSubmit}>search</button>
-          <p>{inputValueState.value}</p>
         </label>
         <ul className={style.sideMenu}>
         {genres.map((genre, index) => {
@@ -99,12 +100,14 @@ function App() {
       </div>
       <div className="main">
         <ul className={style.movieList}>
-          <h3 className="selectedGenreTitle">{selectedGenre}</h3>
+          <h3 className="selectedGenreTitle">
+            { !inputSearch ? selectedGenre : inputValueState.value }
+          </h3>
           {movies.map((movie, index) => {
             return (
               <li key={index}>
                 <figure>
-                  <img src={`https://image.tmdb.org/t/p/original/${movie.poster_path}`} alt={movie.title} />
+                  <img src={`https://image.tmdb.org/t/p/original/${movie?.poster_path}`} alt={movie.title} />
                   <figcaption>
                     <dd>{movie.title}</dd>
                     <dt></dt>
