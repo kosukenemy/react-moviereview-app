@@ -1,10 +1,12 @@
 import axios from "axios";
 const API_KEY = process.env.REACT_APP_TMDB_API_KEY;
 const APIQuery = "?api_key=";
+const KeyWordQuery = "&query="
 const GenreQuery = "&with_genres=";
 const genreUrl = `https://api.themoviedb.org/3/genre/movie/list${APIQuery}${API_KEY}`;
 const movieWithGenreURL = "https://api.themoviedb.org/3/discover/movie" + APIQuery + API_KEY + GenreQuery;
 
+const movieWithKeyWords = "https://api.themoviedb.org/3/discover/movie" + APIQuery + API_KEY + KeyWordQuery + "spider";
 
 
 export const getMovieGenres = async() => {
@@ -45,7 +47,7 @@ export const getGenresQueryMovie = async(genreId:string) => {
             release_date: g['release_date'],
             vote_average: g['vote_average'],
             vote_count: g['vote_count']
-        }))
+        }));
         return modifiedData;
     } catch (error) { }
 } 

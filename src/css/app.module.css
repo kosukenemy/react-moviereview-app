@@ -1,3 +1,10 @@
+* {
+  margin: 0;
+  padding: 0;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+
 .pageContainer {
   display: -webkit-box;
   display: -ms-flexbox;
@@ -10,7 +17,19 @@
   width: 100%;
 }
 
+.pageContainer ul {
+  margin: 0;
+}
+
 .pageContainer ul li {
   list-style: none;
+}
+
+.sideMenu {
+  width: 300px;
+}
+
+.movieList {
+  padding: 0;
 }
 /*# sourceMappingURL=app.module.css.map */

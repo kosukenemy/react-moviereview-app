@@ -1,4 +1,11 @@
 
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 .pageContainer {
   display: flex;
   margin: 0 auto;
@@ -7,6 +14,17 @@
   vertical-align: top;
   width: 100%;
 }
+.pageContainer ul {
+  margin: 0;
+}
 .pageContainer ul li {
   list-style: none;
+}
+
+.sideMenu {
+  width: 300px;
+}
+
+.movieList {
+  padding: 0;
 }
