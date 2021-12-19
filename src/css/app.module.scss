@@ -6,6 +6,15 @@
   box-sizing: border-box;
 }
 
+@function get_vw($size, $viewport:1280){
+    $rate: 100 / $viewport;
+    @return $rate * $size * 1vw;
+}
+@mixin fontsize($size: 24, $base: 16) {
+  font-size: $size + px;
+  font-size: ($size / $base) * 1rem;
+}
+
 .pageContainer {
   display: flex;
   margin: 0 auto;
@@ -16,15 +25,22 @@
 }
 .pageContainer ul {
   margin: 0;
+  padding: 0;
 }
 .pageContainer ul li {
   list-style: none;
 }
 
 .sideMenu {
-  width: 300px;
+  width: get_vw(300);
+  min-width: 300px;
 }
 
 .movieList {
-  padding: 0;
+  width: get_vw(980); 
+  display: flex;
+  flex-wrap: wrap;
+}
+.movieCard {
+  width: get_vw(300);
 }

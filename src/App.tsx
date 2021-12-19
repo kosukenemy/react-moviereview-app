@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import style from "../src/css/app.module.css";
 import { getMovieGenres } from '../src/tmdbAPI';
 import { getGenresQueryMovie } from '../src/tmdbAPI';
@@ -37,7 +37,7 @@ function App() {
   const [genres, setGenres] = useState<Genre[]>([]);
   const [movies, setMovies] = useState<GenreMovie[]>([]);
   const [selectedGenre, SetSelectedGenre] = useState<Object>(Object.keys(initialGenreName));
-  const [inputSearch, setInputSearch] = useState<boolean>(false);
+  const inputSearch:any = { state: false };
 
   const fetchAPI = async() => {
     setGenres( await getMovieGenres());
@@ -62,23 +62,24 @@ function App() {
   const dispatch = useDispatch();
 
 
-  const handleKeyWordSearch = (inputValue:string) => {
-    inputValueState.value = inputValue;
+  const handleKeyWordSearch = (event:React.ChangeEvent<HTMLInputElement>) => {
+    if ( !event.currentTarget.value ) return false;
+    return inputValueState.value = event.currentTarget.value;
   }
 
   const handleSubmit = async() => {
     dispatch(searchKeyword() );
     // 検索APIに引数を渡す
     setMovies(await keyWordSearch(inputValueState.value) );
-    setInputSearch(true)
-    console.log(inputSearch)
+    inputSearch.state = true;
+    console.log(inputSearch.state)
   }
 
   return (
     <div className={style.pageContainer}>
       <div className="sideBar">
         <label className="keywordSearch">
-          <input onChange={ (event) => { handleKeyWordSearch(event.currentTarget.value) } } 
+          <input onChange={ (event) => { handleKeyWordSearch(event) } } 
           type="text"
           />
           <button onClick={handleSubmit}>search</button>
@@ -99,13 +100,16 @@ function App() {
         </ul>
       </div>
       <div className="main">
+        <h3 className="selectedGenreTitle">
+          { selectedGenre }
+        </h3>
         <ul className={style.movieList}>
-          <h3 className="selectedGenreTitle">
-            { !inputSearch ? selectedGenre : inputValueState.value }
-          </h3>
           {movies.map((movie, index) => {
+            if (movie.title === "UNdefined") {
+              return <div key={index} className="no-results">検索結果はありません</div>
+            }
             return (
-              <li key={index}>
+              <li key={index} className={style.movieCard}>
                 <figure>
                   <img src={`https://image.tmdb.org/t/p/original/${movie?.poster_path}`} alt={movie.title} />
                   <figcaption>
@@ -116,6 +120,7 @@ function App() {
               </li>    
             )
           })}
+          { movies.length === 0 && <div className="no-results">検索結果はありません</div> }
         </ul>
       </div>
     </div>

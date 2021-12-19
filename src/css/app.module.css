@@ -19,6 +19,7 @@
 
 .pageContainer ul {
   margin: 0;
+  padding: 0;
 }
 
 .pageContainer ul li {
@@ -26,10 +27,20 @@
 }
 
 .sideMenu {
-  width: 300px;
+  width: 23.4375vw;
+  min-width: 300px;
 }
 
 .movieList {
-  padding: 0;
+  width: 76.5625vw;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+}
+
+.movieCard {
+  width: 23.4375vw;
 }
 /*# sourceMappingURL=app.module.css.map */
