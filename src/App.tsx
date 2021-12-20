@@ -5,7 +5,8 @@ import { getGenresQueryMovie } from '../src/tmdbAPI';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from './store';
 import { searchKeyword } from './store/searchKeyword/action';
-import { keyWordSearch } from './tmdbAPI/index'
+import { keyWordSearch } from './tmdbAPI/index';
+import { ListButton } from '../src/components/atoms/ListButton';
 
 type initialGenre = {
   [key: string]: any;
@@ -21,12 +22,13 @@ type GenreMovie = {
   original_title: string;
   title: string;
   overview: string;
-  popularity?: string;
+  popularity: string;
   poster_path: string;
+  backdrop_path: string,
   release_date: string;
   vote_average: string;
   vote_count:string;
-  likedCount?: number;
+  liked?: boolean;
 };
 
 
@@ -87,31 +89,35 @@ function App() {
         <ul className={style.sideMenu}>
         {genres.map((genre, index) => {
           return (
-              <li key={index} className="sideMenu-list">
-                <button 
-                onClick={ (event) => handleGenreType(event.currentTarget.id, event.currentTarget.textContent) } 
-                id={genre.id}
-                >
-                  {genre.name}
-                </button>
+              <>
+              <li className="sideMenu-list" key={genre.id}>
+                <ListButton
+                  key={index} 
+                  id={genre.id} 
+                  name={genre.name}
+                  eventHandler={(event: any) => handleGenreType(event.currentTarget.id, event.currentTarget.textContent) } 
+                />
               </li>
+              </>
           )
         })}
         </ul>
       </div>
       <div className="main">
-        <h3 className="selectedGenreTitle">
+        <h3>
           { selectedGenre }
         </h3>
         <ul className={style.movieList}>
           {movies.map((movie, index) => {
+            movie.liked = false;
+
             if (movie.title === "UNdefined") {
               return <div key={index} className="no-results">検索結果はありません</div>
             }
             return (
               <li key={index} className={style.movieCard}>
                 <figure>
-                  <img src={`https://image.tmdb.org/t/p/original/${movie?.poster_path}`} alt={movie.title} />
+                  <img src={`https://image.tmdb.org/t/p/original/${movie?.backdrop_path}`} alt={movie.title} />
                   <figcaption>
                     <dd>{movie.title}</dd>
                     <dt></dt>
@@ -126,5 +132,7 @@ function App() {
     </div>
   );
 }
+
+
 
 export default App;
