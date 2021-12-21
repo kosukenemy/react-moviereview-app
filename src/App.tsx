@@ -6,7 +6,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from './store';
 import { searchKeyword } from './store/searchKeyword/action';
 import { keyWordSearch } from './tmdbAPI/index';
-import { ListButton } from '../src/components/atoms/ListButton';
+import { Button } from './components/atoms/Button';
 
 type initialGenre = {
   [key: string]: any;
@@ -89,16 +89,17 @@ function App() {
         <ul className={style.sideMenu}>
         {genres.map((genre, index) => {
           return (
-              <>
-              <li className="sideMenu-list" key={genre.id}>
-                <ListButton
-                  key={index} 
-                  id={genre.id} 
-                  name={genre.name}
-                  eventHandler={(event: any) => handleGenreType(event.currentTarget.id, event.currentTarget.textContent) } 
-                />
-              </li>
-              </>
+            <li className="sideMenu-list" key={index}>
+              <Button
+                id={genre.id} 
+                value={genre.name}
+                colorTheme={"#333"}
+                fontSize={14}
+                fontWeight={600}
+                fontColor={"#fff"}
+                onClick={(event: any) => handleGenreType(event.currentTarget.id, event.currentTarget.textContent) } 
+              />
+            </li>
           )
         })}
         </ul>
