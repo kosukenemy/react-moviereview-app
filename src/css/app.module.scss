@@ -29,6 +29,7 @@
 }
 .pageContainer ul li {
   list-style: none;
+  display: inline-block;
 }
 
 .sideMenu {
@@ -43,4 +44,5 @@
 }
 .movieCard {
   width: get_vw(300);
+  padding: 1%;
 }

@@ -5,7 +5,9 @@ import { getGenresQueryMovie } from '../src/tmdbAPI';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from './store';
 import { searchKeyword } from './store/searchKeyword/action';
-import { keyWordSearch } from './tmdbAPI/index'
+import { keyWordSearch } from './tmdbAPI/index';
+import { Button } from './components/atoms/Button';
+import { SearchBar } from './components/atoms/SearchBar';
 
 type initialGenre = {
   [key: string]: any;
@@ -21,12 +23,13 @@ type GenreMovie = {
   original_title: string;
   title: string;
   overview: string;
-  popularity?: string;
+  popularity: string;
   poster_path: string;
+  backdrop_path: string,
   release_date: string;
   vote_average: string;
   vote_count:string;
-  likedCount?: number;
+  liked?: boolean;
 };
 
 
@@ -63,6 +66,7 @@ function App() {
 
 
   const handleKeyWordSearch = (event:React.ChangeEvent<HTMLInputElement>) => {
+    console.log(event.currentTarget.value)
     if ( !event.currentTarget.value ) return false;
     return inputValueState.value = event.currentTarget.value;
   }
@@ -79,39 +83,56 @@ function App() {
     <div className={style.pageContainer}>
       <div className="sideBar">
         <label className="keywordSearch">
-          <input onChange={ (event) => { handleKeyWordSearch(event) } } 
-          type="text"
+          <SearchBar 
+            border={"#333"}
+            placeholder={"...find movies by title"}
+            onChange={ (event) => { handleKeyWordSearch(event) } }
           />
-          <button onClick={handleSubmit}>search</button>
+          <Button 
+            value={"search"}
+            colorTheme={"blue"}
+            fontSize={12}
+            fontWeight={600}
+            fontColor={"#fff"}
+            onClick={handleSubmit} 
+            borderRadius={3}
+            />
         </label>
         <ul className={style.sideMenu}>
         {genres.map((genre, index) => {
           return (
-              <li key={index} className="sideMenu-list">
-                <button 
-                onClick={ (event) => handleGenreType(event.currentTarget.id, event.currentTarget.textContent) } 
-                id={genre.id}
-                >
-                  {genre.name}
-                </button>
-              </li>
+            <li className="sideMenu-list" key={index}>
+              <Button
+                id={genre.id} 
+                value={genre.name}
+                colorTheme={"#fff"}
+                border={"#333"}
+                fontSize={12}
+                fontWeight={300}
+                fontColor={"#333"}
+                borderRadius={10}
+                onClick={(event) => handleGenreType(event.currentTarget.id, event.currentTarget.textContent) } 
+              />
+            </li>
           )
         })}
         </ul>
       </div>
       <div className="main">
-        <h3 className="selectedGenreTitle">
+        <h3>
           { selectedGenre }
         </h3>
         <ul className={style.movieList}>
           {movies.map((movie, index) => {
+            movie.liked = false;
+
             if (movie.title === "UNdefined") {
               return <div key={index} className="no-results">検索結果はありません</div>
             }
             return (
               <li key={index} className={style.movieCard}>
                 <figure>
-                  <img src={`https://image.tmdb.org/t/p/original/${movie?.poster_path}`} alt={movie.title} />
+                  <img src={`https://image.tmdb.org/t/p/original/${movie?.backdrop_path}`} alt={movie.title} />
                   <figcaption>
                     <dd>{movie.title}</dd>
                     <dt></dt>
@@ -126,5 +147,7 @@ function App() {
     </div>
   );
 }
+
+
 
 export default App;
