@@ -9,18 +9,31 @@ type ButtonProps = {
   fontWeight?: 300 | 600;
   fontSize?: number;
   fontColor?: string;
+  borderRadius?: number;
 }
 
 export const Button = (props:ButtonProps) => {
-  const { id, colorTheme, border, fontSize, fontWeight, fontColor, onClick, value } = props;
+  const { 
+    id,
+    colorTheme,
+    border,
+    fontSize,
+    fontWeight,
+    fontColor,
+    onClick,
+    value,
+    borderRadius
+  } = props;
+
   return (
     <StyledButton 
       theme={{
         main: colorTheme, 
-        border:border,
+        border: border,
         size: fontSize,
         weight: fontWeight,
-        fontColor: fontColor
+        fontColor: fontColor,
+        borderRadius: borderRadius
       }} 
       id={id} 
       onClick={onClick}
@@ -40,8 +53,8 @@ const StyledButton = styled.button`
   appearance: auto;
   cursor: pointer;
   letter-spacing: 0.1em;
-  border-radius: 10px;
-  padding: 4px 6px;
+  border-radius: ${({theme}) => theme.borderRadius}px;;
+  padding: 6px;
   margin: 2px 1px;
 
   &:focus {

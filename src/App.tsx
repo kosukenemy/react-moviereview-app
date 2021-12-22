@@ -7,6 +7,7 @@ import { RootState } from './store';
 import { searchKeyword } from './store/searchKeyword/action';
 import { keyWordSearch } from './tmdbAPI/index';
 import { Button } from './components/atoms/Button';
+import { SearchBar } from './components/atoms/SearchBar';
 
 type initialGenre = {
   [key: string]: any;
@@ -65,6 +66,7 @@ function App() {
 
 
   const handleKeyWordSearch = (event:React.ChangeEvent<HTMLInputElement>) => {
+    console.log(event.currentTarget.value)
     if ( !event.currentTarget.value ) return false;
     return inputValueState.value = event.currentTarget.value;
   }
@@ -81,10 +83,20 @@ function App() {
     <div className={style.pageContainer}>
       <div className="sideBar">
         <label className="keywordSearch">
-          <input onChange={ (event) => { handleKeyWordSearch(event) } } 
-          type="text"
+          <SearchBar 
+            border={"#333"}
+            placeholder={"...find movies by title"}
+            onChange={ (event) => { handleKeyWordSearch(event) } }
           />
-          <button onClick={handleSubmit}>search</button>
+          <Button 
+            value={"search"}
+            colorTheme={"blue"}
+            fontSize={12}
+            fontWeight={600}
+            fontColor={"#fff"}
+            onClick={handleSubmit} 
+            borderRadius={3}
+            />
         </label>
         <ul className={style.sideMenu}>
         {genres.map((genre, index) => {
@@ -98,7 +110,8 @@ function App() {
                 fontSize={12}
                 fontWeight={300}
                 fontColor={"#333"}
-                onClick={(event: any) => handleGenreType(event.currentTarget.id, event.currentTarget.textContent) } 
+                borderRadius={10}
+                onClick={(event) => handleGenreType(event.currentTarget.id, event.currentTarget.textContent) } 
               />
             </li>
           )
