@@ -93,10 +93,11 @@ function App() {
               <Button
                 id={genre.id} 
                 value={genre.name}
-                colorTheme={"#333"}
-                fontSize={14}
-                fontWeight={600}
-                fontColor={"#fff"}
+                colorTheme={"#fff"}
+                border={"#333"}
+                fontSize={12}
+                fontWeight={300}
+                fontColor={"#333"}
                 onClick={(event: any) => handleGenreType(event.currentTarget.id, event.currentTarget.textContent) } 
               />
             </li>

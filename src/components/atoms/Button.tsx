@@ -5,38 +5,47 @@ type ButtonProps = {
   id?: string;
   onClick: React.MouseEventHandler<HTMLButtonElement>;
   colorTheme?: string;
+  border?:string;
   fontWeight?: 300 | 600;
   fontSize?: number;
   fontColor?: string;
 }
 
-export const Button:React.FC<ButtonProps> = ({ ...props }) => {
+export const Button = (props:ButtonProps) => {
+  const { id, colorTheme, border, fontSize, fontWeight, fontColor, onClick, value } = props;
   return (
-    <ButtonStyle 
+    <StyledButton 
       theme={{
-        main: props.colorTheme, 
-        size: props.fontSize,
-        weight: props.fontWeight,
-        fontColor: props.fontColor
+        main: colorTheme, 
+        border:border,
+        size: fontSize,
+        weight: fontWeight,
+        fontColor: fontColor
       }} 
-      id={ props.id } 
-      onClick={ props.onClick }
+      id={id} 
+      onClick={onClick}
     >
-      { props.value }
-    </ButtonStyle>
+      {value}
+    </StyledButton>
   )
 }
 
-const ButtonStyle = styled.button`
+const StyledButton = styled.button`
   background: ${({theme}) => theme.main};
   font-size: ${({theme}) => theme.size}px;
   font-weight: ${({theme}) => theme.weight};
   color: ${({theme}) => theme.fontColor};
-  outline: none;
-  border: none;
+  outline: ${({theme}) => theme.main};
+  border: solid 1px ${({theme}) => theme.border};
   appearance: auto;
   cursor: pointer;
-  border-radius: 6px;
+  letter-spacing: 0.1em;
+  border-radius: 10px;
   padding: 4px 6px;
-  margin: 2px 0;
+  margin: 2px 1px;
+
+  &:focus {
+    background: ${({theme}) => theme.fontColor};
+    color: ${({theme}) => theme.main};
+  }
 `;
