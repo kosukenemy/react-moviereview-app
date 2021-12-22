@@ -8,6 +8,7 @@ import { searchKeyword } from './store/searchKeyword/action';
 import { keyWordSearch } from './tmdbAPI/index';
 import { Button } from './components/atoms/Button';
 import { SearchBar } from './components/atoms/SearchBar';
+import { ThumbnailCard } from './components/organisms/ThumbnailCard';
 
 type initialGenre = {
   [key: string]: any;
@@ -130,15 +131,12 @@ function App() {
               return <div key={index} className="no-results">検索結果はありません</div>
             }
             return (
-              <li key={index} className={style.movieCard}>
-                <figure>
-                  <img src={`https://image.tmdb.org/t/p/original/${movie?.backdrop_path}`} alt={movie.title} />
-                  <figcaption>
-                    <dd>{movie.title}</dd>
-                    <dt></dt>
-                  </figcaption>
-                </figure>
-              </li>    
+              <React.Fragment key={index}>
+                <ThumbnailCard 
+                  src={movie?.backdrop_path}
+                  title={movie.title}
+                />
+              </React.Fragment>
             )
           })}
           { movies.length === 0 && <div className="no-results">検索結果はありません</div> }
