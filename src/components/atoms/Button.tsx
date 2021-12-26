@@ -10,7 +10,8 @@ type ButtonProps = {
   fontSize?: number;
   fontColor?: string;
   borderRadius?: number;
-}
+  active?: string;
+};
 
 export const Button = (props:ButtonProps) => {
   const { 
@@ -22,11 +23,15 @@ export const Button = (props:ButtonProps) => {
     fontColor,
     onClick,
     value,
-    borderRadius
+    borderRadius,
+    active
   } = props;
+
+  const isValid:string = "isValid";
 
   return (
     <StyledButton 
+      className={ active === value ? isValid: "" }
       theme={{
         main: colorTheme, 
         border: border,
@@ -57,8 +62,8 @@ const StyledButton = styled.button`
   padding: 6px;
   margin: 2px 1px;
 
-  &:focus {
-    background: ${({theme}) => theme.fontColor};
-    color: ${({theme}) => theme.main};
+  &.isValid {
+    font-weight: 600;
   }
+
 `;

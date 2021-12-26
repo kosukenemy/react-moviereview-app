@@ -40,7 +40,8 @@ function App() {
   const initialGenreId:initialGenre = { type: initialGenreName.initialGenreId };
   const [genres, setGenres] = useState<Genre[]>([]);
   const [movies, setMovies] = useState<GenreMovie[]>([]);
-  const [selectedGenre, SetSelectedGenre] = useState<Object>(Object.keys(initialGenreName));
+  const [selectedGenre, setSelectedGenre] = useState<Object>(Object.keys(initialGenreName));
+  const [activeTab, setActiveTab] = useState<string>("Action");
   const inputSearch:any = { state: false };
 
   const fetchAPI = async() => {
@@ -53,12 +54,20 @@ function App() {
   }, []);
 
 
-  const handleGenreType = async(genreId:string, genreName:any) => {
+  const handleGenreButton = async(event:React.MouseEvent<HTMLButtonElement>) => {
+    const genreId = event.currentTarget.id;
+    const genreName:any = event.currentTarget.textContent;
     setMovies( await getGenresQueryMovie(genreId));
-    SetSelectedGenre(genreName);
+    setSelectedGenre(genreName);
+    validClassButton(genreName);
   }
 
-
+  const validClassButton = (genreName: string) => {
+    setActiveTab(genreName);
+    console.log(activeTab)
+  }
+  console.log(activeTab)
+  
 
   // reducxから呼び出し
   const inputValueState:any = useSelector((state: RootState) => state.inputValue);
@@ -67,7 +76,6 @@ function App() {
 
 
   const handleKeyWordSearch = (event:React.ChangeEvent<HTMLInputElement>) => {
-    console.log(event.currentTarget.value)
     if ( !event.currentTarget.value ) return false;
     return inputValueState.value = event.currentTarget.value;
   }
@@ -77,7 +85,19 @@ function App() {
     // 検索APIに引数を渡す
     setMovies(await keyWordSearch(inputValueState.value) );
     inputSearch.state = true;
-    console.log(inputSearch.state)
+  }
+
+  const onHoverMovieVideo = (thumbnailId:any) => {
+    const activeMovieKey:any = new Set<string>();
+    activeMovieKey.add(thumbnailId)
+    setTimeout(() => {
+      for ( const id of activeMovieKey ) {
+        // console.log(id)
+      }
+    },3000)
+  }
+  const offHoverMovieVideo = () => {
+    console.log('off')
   }
 
   return (
@@ -112,7 +132,8 @@ function App() {
                 fontWeight={300}
                 fontColor={"#333"}
                 borderRadius={10}
-                onClick={(event) => handleGenreType(event.currentTarget.id, event.currentTarget.textContent) } 
+                onClick={(event) => handleGenreButton(event) }
+                active={activeTab}
               />
             </li>
           )
@@ -131,12 +152,15 @@ function App() {
               return <div key={index} className="no-results">検索結果はありません</div>
             }
             return (
-              <React.Fragment key={index}>
+              <li key={index}>
                 <ThumbnailCard 
+                  id={movie?.id}
                   src={movie?.backdrop_path}
                   title={movie.title}
+                  onFocus={(event) => onHoverMovieVideo(event.currentTarget.dataset.movie_id)}
+                  offFocus={() => offHoverMovieVideo()}
                 />
-              </React.Fragment>
+              </li>
             )
           })}
           { movies.length === 0 && <div className="no-results">検索結果はありません</div> }

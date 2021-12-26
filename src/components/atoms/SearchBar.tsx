@@ -5,7 +5,7 @@ type SearchBarProps = {
   border?: string;
   placeholder?: string;
   onChange: React.ChangeEventHandler<HTMLInputElement>;
-}
+};
 
 export const SearchBar = (props:SearchBarProps) => {
   const { border, placeholder, onChange } = props;
