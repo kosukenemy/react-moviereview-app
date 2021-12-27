@@ -114,7 +114,7 @@ function App() {
   }
 
   return (
-    <div className={style.pageContainer}>
+    <div>
       <div className="sideBar">
         <label className="keywordSearch">
           <SearchBar 
