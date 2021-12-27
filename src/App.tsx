@@ -79,22 +79,23 @@ function App() {
   }
 
   const clearInputValue = () => {
-    const keywordSearchInput 
-    = document.querySelector<any>('.keywordSearch input');
+    const keywordSearchInput = document.querySelector<any>('.keywordSearch input');
     keywordSearchInput.value = ""
   }
 
   const handleSubmit = async() => {
     dispatch(searchKeyword());
-    setInputValue("");
-    clearInputValue();
+    
     // 検索APIに引数を渡す
     setMovies(await keyWordSearch(inputValueState.value) );
-    
     setFindWords(inputValueState.value);
+    
     // ジャンルの表示を初期化
     setSelectedGenre("");
     validClassButton("");
+    // 検索フォームの値を初期化
+    setInputValue("");
+    clearInputValue();
   }
 
   const onHoverMovieVideo = (thumbnailId:any) => {
