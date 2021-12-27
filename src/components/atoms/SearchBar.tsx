@@ -28,5 +28,5 @@ export const SearchBar = (props:SearchBarProps) => {
 const StyledSearchBar = styled.input`
   border: solid 1px ${({theme}) => theme.border};
   border-radius: 3px;
-  padding: 5px 10px;
+  padding: 7px;
 `;

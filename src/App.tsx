@@ -1,4 +1,4 @@
-import React, { useState, useEffect, HTMLInputTypeAttribute } from 'react';
+import React, { useState, useEffect } from 'react';
 import style from "../src/css/app.module.css";
 import { getMovieGenres } from '../src/tmdbAPI';
 import { getGenresQueryMovie } from '../src/tmdbAPI';
@@ -46,14 +46,16 @@ function App() {
   const [findWords, setFindWords] = useState<string>("");
   const noResults = "UNdefined";
 
+  useEffect(() => {
+    fetchAPI();
+  }, []);
+
   const fetchAPI = async() => {
     setGenres( await getMovieGenres());
     setMovies( await getGenresQueryMovie(initialGenreId.type));
   }
 
-  useEffect(() => {
-    fetchAPI();
-  }, []);
+
 
 
   const handleGenreButton = async(event:React.MouseEvent<HTMLButtonElement>) => {
@@ -103,7 +105,7 @@ function App() {
     activeMovieKey.add(thumbnailId)
     setTimeout(() => {
       for ( const id of activeMovieKey ) {
-        // console.log(id)
+        return <div>id</div>
       }
     },3000)
   }
@@ -116,7 +118,7 @@ function App() {
       <div className="sideBar">
         <label className="keywordSearch">
           <SearchBar 
-            border={"#333"}
+            border={"#c0c0c0"}
             placeholder={"...movie title"}
             onChange={(event) => { handleKeyWordSearch(event) }}
             value={inputValue}
@@ -128,7 +130,7 @@ function App() {
             fontWeight={600}
             fontColor={"#fff"}
             onClick={handleSubmit} 
-            borderRadius={3}
+            borderRadius={6}
             />
         </label>
         <ul className="">

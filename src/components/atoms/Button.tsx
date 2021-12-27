@@ -61,7 +61,7 @@ const StyledButton = styled.button`
   cursor: pointer;
   letter-spacing: 0.1em;
   border-radius: ${({theme}) => theme.borderRadius}px;;
-  padding: 6px;
+  padding: 8px;
   margin: 2px 1px;
 
   &.isValid {
