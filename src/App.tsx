@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, HTMLInputTypeAttribute } from 'react';
 import style from "../src/css/app.module.css";
 import { getMovieGenres } from '../src/tmdbAPI';
 import { getGenresQueryMovie } from '../src/tmdbAPI';
@@ -42,7 +42,9 @@ function App() {
   const [movies, setMovies] = useState<GenreMovie[]>([]);
   const [selectedGenre, setSelectedGenre] = useState<Object>(Object.keys(initialGenreName));
   const [activeTab, setActiveTab] = useState<string>("Action");
-  const inputSearch:any = { state: false };
+  const [inputValue, setInputValue] = useState<string>("");
+  const [findWords, setFindWords] = useState<string>("");
+  const noResults = "UNdefined";
 
   const fetchAPI = async() => {
     setGenres( await getMovieGenres());
@@ -60,31 +62,39 @@ function App() {
     setMovies( await getGenresQueryMovie(genreId));
     setSelectedGenre(genreName);
     validClassButton(genreName);
+    setFindWords("");
   }
 
-  const validClassButton = (genreName: string) => {
-    setActiveTab(genreName);
-    console.log(activeTab)
-  }
-  console.log(activeTab)
+  const validClassButton = (genreName: string) => setActiveTab(genreName);
   
-
-  // reducxから呼び出し
   const inputValueState:any = useSelector((state: RootState) => state.inputValue);
   // stateを更新
   const dispatch = useDispatch();
 
 
   const handleKeyWordSearch = (event:React.ChangeEvent<HTMLInputElement>) => {
-    if ( !event.currentTarget.value ) return false;
-    return inputValueState.value = event.currentTarget.value;
+    setInputValue(event.currentTarget.value);
+    inputValueState.value = event.currentTarget.value;
+    return;
+  }
+
+  const clearInputValue = () => {
+    const keywordSearchInput 
+    = document.querySelector<any>('.keywordSearch input');
+    keywordSearchInput.value = ""
   }
 
   const handleSubmit = async() => {
-    dispatch(searchKeyword() );
+    dispatch(searchKeyword());
+    setInputValue("");
+    clearInputValue();
     // 検索APIに引数を渡す
     setMovies(await keyWordSearch(inputValueState.value) );
-    inputSearch.state = true;
+    
+    setFindWords(inputValueState.value);
+    // ジャンルの表示を初期化
+    setSelectedGenre("");
+    validClassButton("");
   }
 
   const onHoverMovieVideo = (thumbnailId:any) => {
@@ -106,8 +116,9 @@ function App() {
         <label className="keywordSearch">
           <SearchBar 
             border={"#333"}
-            placeholder={"...find movies by title"}
-            onChange={ (event) => { handleKeyWordSearch(event) } }
+            placeholder={"...movie title"}
+            onChange={(event) => { handleKeyWordSearch(event) }}
+            value={inputValue}
           />
           <Button 
             value={"search"}
@@ -119,7 +130,7 @@ function App() {
             borderRadius={3}
             />
         </label>
-        <ul className={style.sideMenu}>
+        <ul className="">
         {genres.map((genre, index) => {
           return (
             <li className="sideMenu-list" key={index}>
@@ -144,11 +155,16 @@ function App() {
         <h3>
           { selectedGenre }
         </h3>
+        <h4>
+          { findWords && <span>keyWord: </span> }
+          <span>{ findWords }</span>
+        </h4>
         <ul className={style.movieList}>
           {movies.map((movie, index) => {
             movie.liked = false;
+            // console.log(movie)
 
-            if (movie.title === "UNdefined") {
+            if (movie.title === noResults ) {
               return <div key={index} className="no-results">検索結果はありません</div>
             }
             return (

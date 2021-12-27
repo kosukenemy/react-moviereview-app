@@ -10,7 +10,7 @@ type ButtonProps = {
   fontSize?: number;
   fontColor?: string;
   borderRadius?: number;
-  active?: string;
+  active?: object | string;
 };
 
 export const Button = (props:ButtonProps) => {
@@ -38,7 +38,7 @@ export const Button = (props:ButtonProps) => {
         size: fontSize,
         weight: fontWeight,
         fontColor: fontColor,
-        borderRadius: borderRadius
+        borderRadius: borderRadius,
       }} 
       id={id} 
       onClick={onClick}
@@ -47,6 +47,8 @@ export const Button = (props:ButtonProps) => {
     </StyledButton>
   )
 }
+
+
 
 const StyledButton = styled.button`
   background: ${({theme}) => theme.main};
@@ -64,6 +66,6 @@ const StyledButton = styled.button`
 
   &.isValid {
     font-weight: 600;
+    outline: auto;
   }
-
 `;
