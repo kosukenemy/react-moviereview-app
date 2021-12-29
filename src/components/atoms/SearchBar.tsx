@@ -5,10 +5,11 @@ type SearchBarProps = {
   border?: string;
   placeholder?: string;
   onChange: React.ChangeEventHandler<HTMLInputElement>;
-}
+  value: string;
+};
 
 export const SearchBar = (props:SearchBarProps) => {
-  const { border, placeholder, onChange } = props;
+  const { border, placeholder, onChange, value } = props;
   return (
     <>
       <StyledSearchBar 
@@ -18,6 +19,7 @@ export const SearchBar = (props:SearchBarProps) => {
         onChange={onChange} 
         placeholder={placeholder}
         type="text" 
+        defaultValue={value}
       />
     </>
   )
@@ -26,5 +28,5 @@ export const SearchBar = (props:SearchBarProps) => {
 const StyledSearchBar = styled.input`
   border: solid 1px ${({theme}) => theme.border};
   border-radius: 3px;
-  padding: 5px 10px;
+  padding: 7px;
 `;

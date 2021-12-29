@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import style from "../src/css/app.module.css";
 import { getMovieGenres } from '../src/tmdbAPI';
 import { getGenresQueryMovie } from '../src/tmdbAPI';
 import { useSelector, useDispatch } from 'react-redux';
@@ -8,6 +7,8 @@ import { searchKeyword } from './store/searchKeyword/action';
 import { keyWordSearch } from './tmdbAPI/index';
 import { Button } from './components/atoms/Button';
 import { SearchBar } from './components/atoms/SearchBar';
+import { ThumbnailCard } from './components/organisms/ThumbnailCard';
+import styled from 'styled-components'
 
 type initialGenre = {
   [key: string]: any;
@@ -39,54 +40,88 @@ function App() {
   const initialGenreId:initialGenre = { type: initialGenreName.initialGenreId };
   const [genres, setGenres] = useState<Genre[]>([]);
   const [movies, setMovies] = useState<GenreMovie[]>([]);
-  const [selectedGenre, SetSelectedGenre] = useState<Object>(Object.keys(initialGenreName));
-  const inputSearch:any = { state: false };
+  const [selectedGenre, setSelectedGenre] = useState<Object>(Object.keys(initialGenreName));
+  const [activeTab, setActiveTab] = useState<string>("Action");
+  const [inputValue, setInputValue] = useState<string>("");
+  const [findWords, setFindWords] = useState<string>("");
+  const noResults = "UNdefined";
+
+  useEffect(() => {
+    fetchAPI();
+  }, []);
 
   const fetchAPI = async() => {
     setGenres( await getMovieGenres());
     setMovies( await getGenresQueryMovie(initialGenreId.type));
   }
 
-  useEffect(() => {
-    fetchAPI();
-  }, []);
 
 
-  const handleGenreType = async(genreId:string, genreName:any) => {
+
+  const handleGenreButton = async(event:React.MouseEvent<HTMLButtonElement>) => {
+    const genreId = event.currentTarget.id;
+    const genreName:any = event.currentTarget.textContent;
     setMovies( await getGenresQueryMovie(genreId));
-    SetSelectedGenre(genreName);
+    setSelectedGenre(genreName);
+    validClassButton(genreName);
+    setFindWords("");
   }
 
-
-
-  // reducxから呼び出し
+  const validClassButton = (genreName: string) => setActiveTab(genreName);
+  
   const inputValueState:any = useSelector((state: RootState) => state.inputValue);
   // stateを更新
   const dispatch = useDispatch();
 
 
   const handleKeyWordSearch = (event:React.ChangeEvent<HTMLInputElement>) => {
-    console.log(event.currentTarget.value)
-    if ( !event.currentTarget.value ) return false;
-    return inputValueState.value = event.currentTarget.value;
+    setInputValue(event.currentTarget.value);
+    inputValueState.value = event.currentTarget.value;
+    return;
+  }
+
+  const clearInputValue = () => {
+    const keywordSearchInput = document.querySelector<any>('.keywordSearch input');
+    keywordSearchInput.value = ""
   }
 
   const handleSubmit = async() => {
-    dispatch(searchKeyword() );
+    dispatch(searchKeyword());
+    
     // 検索APIに引数を渡す
     setMovies(await keyWordSearch(inputValueState.value) );
-    inputSearch.state = true;
-    console.log(inputSearch.state)
+    setFindWords(inputValueState.value);
+    
+    // ジャンルの表示を初期化
+    setSelectedGenre("");
+    validClassButton("");
+    // 検索フォームの値を初期化
+    setInputValue("");
+    clearInputValue();
+  }
+
+  const onHoverMovieVideo = (thumbnailId:any) => {
+    const activeMovieKey:any = new Set<string>();
+    activeMovieKey.add(thumbnailId)
+    setTimeout(() => {
+      for ( const id of activeMovieKey ) {
+        return <div>id</div>
+      }
+    },3000)
+  }
+  const offHoverMovieVideo = () => {
+    console.log('off')
   }
 
   return (
-    <div className={style.pageContainer}>
+    <div>
       <div className="sideBar">
         <label className="keywordSearch">
           <SearchBar 
-            border={"#333"}
-            placeholder={"...find movies by title"}
-            onChange={ (event) => { handleKeyWordSearch(event) } }
+            border={"#c0c0c0"}
+            placeholder={"...movie title"}
+            onChange={(event) => { handleKeyWordSearch(event) }}
+            value={inputValue}
           />
           <Button 
             value={"search"}
@@ -95,10 +130,10 @@ function App() {
             fontWeight={600}
             fontColor={"#fff"}
             onClick={handleSubmit} 
-            borderRadius={3}
+            borderRadius={6}
             />
         </label>
-        <ul className={style.sideMenu}>
+        <StyledMovieLists>
         {genres.map((genre, index) => {
           return (
             <li className="sideMenu-list" key={index}>
@@ -106,48 +141,64 @@ function App() {
                 id={genre.id} 
                 value={genre.name}
                 colorTheme={"#fff"}
-                border={"#333"}
+                border={"#708090"}
                 fontSize={12}
                 fontWeight={300}
-                fontColor={"#333"}
+                fontColor={"#708090"}
                 borderRadius={10}
-                onClick={(event) => handleGenreType(event.currentTarget.id, event.currentTarget.textContent) } 
+                onClick={(event) => handleGenreButton(event) }
+                active={activeTab}
               />
             </li>
           )
         })}
-        </ul>
+        </StyledMovieLists>
       </div>
       <div className="main">
         <h3>
           { selectedGenre }
         </h3>
-        <ul className={style.movieList}>
+        <h4>
+          { findWords && <span>keyWord: </span> }
+          <span>{ findWords }</span>
+        </h4>
+        <StyledMovieLists>
           {movies.map((movie, index) => {
             movie.liked = false;
-
-            if (movie.title === "UNdefined") {
-              return <div key={index} className="no-results">検索結果はありません</div>
+            if (movie.title === noResults ) {
+              return <h5 key={index} className="no-results">検索結果はありません</h5>
             }
+            if ( movie.backdrop_path === null ) return false;
+
             return (
-              <li key={index} className={style.movieCard}>
-                <figure>
-                  <img src={`https://image.tmdb.org/t/p/original/${movie?.backdrop_path}`} alt={movie.title} />
-                  <figcaption>
-                    <dd>{movie.title}</dd>
-                    <dt></dt>
-                  </figcaption>
-                </figure>
-              </li>    
+              <StyledMovieList key={index}>
+                <ThumbnailCard 
+                  id={movie?.id}
+                  src={movie?.backdrop_path}
+                  title={movie.title}
+                  onFocus={(event) => onHoverMovieVideo(event.currentTarget.dataset.movie_id)}
+                  offFocus={() => offHoverMovieVideo()}
+                  onError={ (event:any) => event.target.src = `${process.env.PUBLIC_URL}/noImage.png` }
+                />
+              </StyledMovieList>
             )
           })}
-          { movies.length === 0 && <div className="no-results">検索結果はありません</div> }
-        </ul>
+          { movies.length === 0 && <h5 className="no-results">検索結果はありません</h5> }
+        </StyledMovieLists>
       </div>
     </div>
   );
 }
 
-
-
 export default App;
+
+const StyledMovieLists = styled.ul`
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+`;
+
+const StyledMovieList = styled.li`
+  width: 32.7%;
+  padding: 0 3px;
+`;

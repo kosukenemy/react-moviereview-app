@@ -10,7 +10,8 @@ type ButtonProps = {
   fontSize?: number;
   fontColor?: string;
   borderRadius?: number;
-}
+  active?: object | string;
+};
 
 export const Button = (props:ButtonProps) => {
   const { 
@@ -22,18 +23,22 @@ export const Button = (props:ButtonProps) => {
     fontColor,
     onClick,
     value,
-    borderRadius
+    borderRadius,
+    active
   } = props;
+
+  const isValid:string = "isValid";
 
   return (
     <StyledButton 
+      className={ active === value ? isValid: "" }
       theme={{
         main: colorTheme, 
         border: border,
         size: fontSize,
         weight: fontWeight,
         fontColor: fontColor,
-        borderRadius: borderRadius
+        borderRadius: borderRadius,
       }} 
       id={id} 
       onClick={onClick}
@@ -43,6 +48,8 @@ export const Button = (props:ButtonProps) => {
   )
 }
 
+
+
 const StyledButton = styled.button`
   background: ${({theme}) => theme.main};
   font-size: ${({theme}) => theme.size}px;
@@ -51,14 +58,15 @@ const StyledButton = styled.button`
   outline: ${({theme}) => theme.main};
   border: solid 1px ${({theme}) => theme.border};
   appearance: auto;
+  white-space: nowrap;
   cursor: pointer;
   letter-spacing: 0.1em;
   border-radius: ${({theme}) => theme.borderRadius}px;;
-  padding: 6px;
+  padding: 8px;
   margin: 2px 1px;
 
-  &:focus {
-    background: ${({theme}) => theme.fontColor};
-    color: ${({theme}) => theme.main};
+  &.isValid {
+    font-weight: 600;
+    outline: auto;
   }
 `;
