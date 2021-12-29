@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import style from "../src/css/app.module.css";
 import { getMovieGenres } from '../src/tmdbAPI';
 import { getGenresQueryMovie } from '../src/tmdbAPI';
 import { useSelector, useDispatch } from 'react-redux';
@@ -9,6 +8,7 @@ import { keyWordSearch } from './tmdbAPI/index';
 import { Button } from './components/atoms/Button';
 import { SearchBar } from './components/atoms/SearchBar';
 import { ThumbnailCard } from './components/organisms/ThumbnailCard';
+import styled from 'styled-components'
 
 type initialGenre = {
   [key: string]: any;
@@ -133,7 +133,7 @@ function App() {
             borderRadius={6}
             />
         </label>
-        <ul className="">
+        <StyledMovieLists>
         {genres.map((genre, index) => {
           return (
             <li className="sideMenu-list" key={index}>
@@ -141,10 +141,10 @@ function App() {
                 id={genre.id} 
                 value={genre.name}
                 colorTheme={"#fff"}
-                border={"#333"}
+                border={"#708090"}
                 fontSize={12}
                 fontWeight={300}
-                fontColor={"#333"}
+                fontColor={"#708090"}
                 borderRadius={10}
                 onClick={(event) => handleGenreButton(event) }
                 active={activeTab}
@@ -152,7 +152,7 @@ function App() {
             </li>
           )
         })}
-        </ul>
+        </StyledMovieLists>
       </div>
       <div className="main">
         <h3>
@@ -162,33 +162,43 @@ function App() {
           { findWords && <span>keyWord: </span> }
           <span>{ findWords }</span>
         </h4>
-        <ul className={style.movieList}>
+        <StyledMovieLists>
           {movies.map((movie, index) => {
             movie.liked = false;
-            // console.log(movie)
-
             if (movie.title === noResults ) {
-              return <div key={index} className="no-results">検索結果はありません</div>
+              return <h5 key={index} className="no-results">検索結果はありません</h5>
             }
+            if ( movie.backdrop_path === null ) return false;
+
             return (
-              <li key={index}>
+              <StyledMovieList key={index}>
                 <ThumbnailCard 
                   id={movie?.id}
                   src={movie?.backdrop_path}
                   title={movie.title}
                   onFocus={(event) => onHoverMovieVideo(event.currentTarget.dataset.movie_id)}
                   offFocus={() => offHoverMovieVideo()}
+                  onError={ (event:any) => event.target.src = `${process.env.PUBLIC_URL}/noImage.png` }
                 />
-              </li>
+              </StyledMovieList>
             )
           })}
-          { movies.length === 0 && <div className="no-results">検索結果はありません</div> }
-        </ul>
+          { movies.length === 0 && <h5 className="no-results">検索結果はありません</h5> }
+        </StyledMovieLists>
       </div>
     </div>
   );
 }
 
-
-
 export default App;
+
+const StyledMovieLists = styled.ul`
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+`;
+
+const StyledMovieList = styled.li`
+  width: 32.7%;
+  padding: 0 3px;
+`;

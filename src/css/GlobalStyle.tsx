@@ -10,5 +10,12 @@ export const GlobalStyle = createGlobalStyle`
     img {
       width: 100%;
     }
+    ul,dd,figure,h5 {
+      padding: 0;
+      margin: 0;
+    }
+    li {
+      list-style: none;
+    }
   }
 `;

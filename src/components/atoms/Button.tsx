@@ -58,6 +58,7 @@ const StyledButton = styled.button`
   outline: ${({theme}) => theme.main};
   border: solid 1px ${({theme}) => theme.border};
   appearance: auto;
+  white-space: nowrap;
   cursor: pointer;
   letter-spacing: 0.1em;
   border-radius: ${({theme}) => theme.borderRadius}px;;
