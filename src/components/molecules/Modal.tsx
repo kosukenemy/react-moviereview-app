@@ -1,4 +1,7 @@
 import { Carousel } from '../../components/atoms/Carousel';
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import Slider from "react-slick"
 import styled from 'styled-components';
 
 type ModalProps = {
@@ -19,20 +22,30 @@ export const Modal = (props: ModalProps) => {
   const keyValues = keys[0];
   if ( keyValues === undefined ) return null;
 
+  const settings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    arrows: false
+  };
+
   return (
-    <StyleModalOverlay onClick={() => onClose(!isOpen)}>
+    <StyleModalOverlay>
       { type === "iframe" &&
-        <>
-          { keyValues.map((val:KeyProps, index:number) => (
-            <div key={index} onClick={eventBubble}>
-              <Carousel 
-                key={index} 
-                embed={val.key} 
-                title={val.name} 
-              />
-            </div>
-          ))}
-        </>
+        <StyledModal>
+          <button onClick={() => onClose(!isOpen)}>close</button>
+          <Slider {...settings}>
+            { keyValues.map((val:KeyProps, index:number) => (
+              <div key={index} onClick={eventBubble}>
+                <Carousel 
+                  key={index} 
+                  embed={val.key} 
+                  title={val.name} 
+                />
+              </div>
+            ))}
+          </Slider>
+        </StyledModal>
       }
     </StyleModalOverlay>
   )
@@ -46,4 +59,12 @@ const StyleModalOverlay = styled.div`
   height: 100%;
   background: rgba(0, 0, 0, 0.9);
   cursor: pointer;
+`;
+
+const StyledModal = styled.div`
+  width: 59%;
+  min-width: 580px;
+  position: fixed;
+  inset: 0;
+  margin: 170px auto;
 `;

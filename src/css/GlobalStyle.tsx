@@ -17,5 +17,11 @@ export const GlobalStyle = createGlobalStyle`
     li {
       list-style: none;
     }
+    .slick-dots {
+      bottom: -50px !important;
+    }
+    .slick-dots li button:before {
+      color: #fff !important;
+    }
   }
 `;
