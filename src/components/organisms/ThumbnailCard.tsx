@@ -4,21 +4,20 @@ type ThumbnailCardProps = {
   id: number;
   title: string;
   src: string;
-  onFocus?: React.MouseEventHandler<HTMLLIElement>;
-  offFocus?: React.MouseEventHandler<HTMLLIElement>;
+  onFocus?: React.MouseEventHandler<HTMLElement>;
   onError?: any;
 };
 
 export const ThumbnailCard = (props:ThumbnailCardProps) => {
-  const { id, title, src, onFocus, offFocus, onError } = props; 
+  const { id, title, src, onFocus, onError } = props; 
   const basePosterUrl = "https://image.tmdb.org/t/p/original/";
 
   return (
-    <StyledThumbnailCard data-movie_id={id} onMouseEnter={onFocus} onMouseLeave={offFocus}>
+    <StyledThumbnailCard>
       <StyledThumbnailImage src={`${basePosterUrl}${src}`} alt={title} onError={onError}/>
       <StyledThumbnailCaption>
         <StyledThumbnailTitle>{title}</StyledThumbnailTitle>
-        <dt></dt>
+        <div data-movie_id={id} onClick={onFocus}>play</div>
       </StyledThumbnailCaption>
     </StyledThumbnailCard>
   )

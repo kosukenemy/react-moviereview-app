@@ -13,9 +13,7 @@ export const SearchBar = (props:SearchBarProps) => {
   return (
     <>
       <StyledSearchBar 
-        theme={{
-          border
-        }}
+        theme={{ border }}
         onChange={onChange} 
         placeholder={placeholder}
         type="text" 

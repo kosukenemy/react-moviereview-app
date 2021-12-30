@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { getMovieGenres } from '../src/tmdbAPI';
 import { getGenresQueryMovie } from '../src/tmdbAPI';
+import { getMovieDetails } from '../src/tmdbAPI';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from './store';
 import { searchKeyword } from './store/searchKeyword/action';
@@ -8,6 +9,7 @@ import { keyWordSearch } from './tmdbAPI/index';
 import { Button } from './components/atoms/Button';
 import { SearchBar } from './components/atoms/SearchBar';
 import { ThumbnailCard } from './components/organisms/ThumbnailCard';
+import { Modal } from './components/molecules/Modal';
 import styled from 'styled-components'
 
 type initialGenre = {
@@ -19,7 +21,7 @@ type Genre = {
   name: string;
 };
 
-type GenreMovie = {
+type Movie = {
   id: number;
   original_title: string;
   title: string;
@@ -39,11 +41,14 @@ function App() {
   const initialGenreName:initialGenre = { Action: 28 };
   const initialGenreId:initialGenre = { type: initialGenreName.initialGenreId };
   const [genres, setGenres] = useState<Genre[]>([]);
-  const [movies, setMovies] = useState<GenreMovie[]>([]);
+  const [movies, setMovies] = useState<Movie[]>([]);
   const [selectedGenre, setSelectedGenre] = useState<Object>(Object.keys(initialGenreName));
   const [activeTab, setActiveTab] = useState<string>("Action");
   const [inputValue, setInputValue] = useState<string>("");
   const [findWords, setFindWords] = useState<string>("");
+  const [movieDetail, setMovieDetail] = useState<any>([] || null);
+  const [isOpenModal, setIsOpenModal] = useState(false);
+  const movieVideoKeys:string[] | undefined = [];
   const noResults = "UNdefined";
 
   useEffect(() => {
@@ -54,9 +59,6 @@ function App() {
     setGenres( await getMovieGenres());
     setMovies( await getGenresQueryMovie(initialGenreId.type));
   }
-
-
-
 
   const handleGenreButton = async(event:React.MouseEvent<HTMLButtonElement>) => {
     const genreId = event.currentTarget.id;
@@ -87,11 +89,9 @@ function App() {
 
   const handleSubmit = async() => {
     dispatch(searchKeyword());
-    
     // 検索APIに引数を渡す
     setMovies(await keyWordSearch(inputValueState.value) );
     setFindWords(inputValueState.value);
-    
     // ジャンルの表示を初期化
     setSelectedGenre("");
     validClassButton("");
@@ -100,21 +100,18 @@ function App() {
     clearInputValue();
   }
 
-  const onHoverMovieVideo = (thumbnailId:any) => {
-    const activeMovieKey:any = new Set<string>();
-    activeMovieKey.add(thumbnailId)
-    setTimeout(() => {
-      for ( const id of activeMovieKey ) {
-        return <div>id</div>
-      }
-    },3000)
-  }
-  const offHoverMovieVideo = () => {
-    console.log('off')
+  const getMovieDetail = async(thumbnailId:any) => {
+    setIsOpenModal(!isOpenModal);
+    setMovieDetail( await getMovieDetails(thumbnailId));
   }
 
+  if ( movieDetail.hasOwnProperty("videos") ) {
+    movieVideoKeys.push(movieDetail.videos.results);
+  }
+
+
   return (
-    <div>
+    <StyledMainWrapper>
       <div className="sideBar">
         <label className="keywordSearch">
           <SearchBar 
@@ -154,7 +151,7 @@ function App() {
         })}
         </StyledMovieLists>
       </div>
-      <div className="main">
+      <div>
         <h3>
           { selectedGenre }
         </h3>
@@ -176,8 +173,7 @@ function App() {
                   id={movie?.id}
                   src={movie?.backdrop_path}
                   title={movie.title}
-                  onFocus={(event) => onHoverMovieVideo(event.currentTarget.dataset.movie_id)}
-                  offFocus={() => offHoverMovieVideo()}
+                  onFocus={(event) => getMovieDetail(event.currentTarget.dataset.movie_id)}
                   onError={ (event:any) => event.target.src = `${process.env.PUBLIC_URL}/noImage.png` }
                 />
               </StyledMovieList>
@@ -186,11 +182,23 @@ function App() {
           { movies.length === 0 && <h5 className="no-results">検索結果はありません</h5> }
         </StyledMovieLists>
       </div>
-    </div>
+      
+      {isOpenModal &&
+        <Modal
+          isOpen={isOpenModal}
+          type={"iframe"}
+          keys={movieVideoKeys}
+        />
+      }
+    </StyledMainWrapper>
   );
 }
 
 export default App;
+
+const StyledMainWrapper = styled.div`
+  position: relative;
+`;
 
 const StyledMovieLists = styled.ul`
   width: 100%;
@@ -199,6 +207,6 @@ const StyledMovieLists = styled.ul`
 `;
 
 const StyledMovieList = styled.li`
-  width: 32.7%;
+  width: 32.3%;
   padding: 0 3px;
 `;
