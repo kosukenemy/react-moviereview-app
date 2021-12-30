@@ -10,6 +10,9 @@ export const GlobalStyle = createGlobalStyle`
     img {
       width: 100%;
     }
+    iframe {
+      display: block;
+    }
     ul,dd,figure,h5 {
       padding: 0;
       margin: 0;

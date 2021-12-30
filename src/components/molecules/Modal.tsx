@@ -62,8 +62,7 @@ const StyleModalOverlay = styled.div`
 `;
 
 const StyledModal = styled.div`
-  width: 59%;
-  min-width: 580px;
+  width: 570px;
   position: fixed;
   inset: 0;
   margin: 170px auto;
