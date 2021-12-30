@@ -188,6 +188,8 @@ function App() {
           isOpen={isOpenModal}
           type={"iframe"}
           keys={movieVideoKeys}
+          onClose={setIsOpenModal}
+          eventBubble={(event) => event.stopPropagation }
         />
       }
     </StyledMainWrapper>

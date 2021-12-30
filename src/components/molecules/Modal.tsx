@@ -1,24 +1,39 @@
-import { Carousel } from '../../components/atoms/Carousel'
-import styled from 'styled-components'
+import { Carousel } from '../../components/atoms/Carousel';
+import styled from 'styled-components';
 
 type ModalProps = {
   isOpen: boolean;
   type: "iframe" | "img";
-  keys?: string[] | any;
+  keys?: any;
+  onClose?: any;
+  eventBubble?: React.MouseEventHandler<HTMLElement>;
 };
 
+type KeyProps = {
+  key: string;
+  name: string;
+}
+
 export const Modal = (props: ModalProps) => {
-  const { isOpen, type, keys } = props;
-  console.log(keys[0])
+  const { isOpen, type, keys, onClose, eventBubble } = props;
+  const keyValues = keys[0];
+  if ( keyValues === undefined ) return null;
 
   return (
-    <StyleModalOverlay>
-      { type === "iframe" && 
-        <div>
-          <Carousel />
-        </div>
+    <StyleModalOverlay onClick={() => onClose(!isOpen)}>
+      { type === "iframe" &&
+        <>
+          { keyValues.map((val:KeyProps, index:number) => (
+            <div key={index} onClick={eventBubble}>
+              <Carousel 
+                key={index} 
+                embed={val.key} 
+                title={val.name} 
+              />
+            </div>
+          ))}
+        </>
       }
-      Modal
     </StyleModalOverlay>
   )
 }
@@ -29,5 +44,6 @@ const StyleModalOverlay = styled.div`
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(0, 0, 0, 0.9);
+  cursor: pointer;
 `;
