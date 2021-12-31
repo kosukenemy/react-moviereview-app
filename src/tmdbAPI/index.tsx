@@ -11,7 +11,6 @@ const movieVideoURL = "https://api.themoviedb.org/3/movie"
 
 
 export const keyWordSearch = async(inputVal:string) => {
-
     try {
         const { data } = await axios.get(`${movieWithKeyWords} + ${inputVal}`, {
             params: {

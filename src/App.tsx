@@ -10,7 +10,7 @@ import { Button } from './components/atoms/Button';
 import { SearchBar } from './components/atoms/SearchBar';
 import { ThumbnailCard } from './components/organisms/ThumbnailCard';
 import { Modal } from './components/molecules/Modal';
-import styled from 'styled-components'
+import styled from 'styled-components';
 
 type initialGenre = {
   [key: string]: any;
@@ -37,7 +37,7 @@ type Movie = {
 
 
 function App() {
-
+  const [loader, setLoader] = useState<boolean>(false);
   const initialGenreName:initialGenre = { Action: 28 };
   const initialGenreId:initialGenre = { type: initialGenreName.initialGenreId };
   const [genres, setGenres] = useState<Genre[]>([]);
@@ -58,6 +58,7 @@ function App() {
   const fetchAPI = async() => {
     setGenres( await getMovieGenres());
     setMovies( await getGenresQueryMovie(initialGenreId.type));
+    setLoader(!loader)
   }
 
   const handleGenreButton = async(event:React.MouseEvent<HTMLButtonElement>) => {
@@ -151,46 +152,56 @@ function App() {
         })}
         </StyledMovieLists>
       </div>
-      <div>
-        <h3>
-          { selectedGenre }
-        </h3>
-        <h4>
-          { findWords && <span>keyWord: </span> }
-          <span>{ findWords }</span>
-        </h4>
-        <StyledMovieLists>
-          {movies.map((movie, index) => {
-            movie.liked = false;
-            if (movie.title === noResults ) {
-              return <h5 key={index} className="no-results">検索結果はありません</h5>
-            }
-            if ( movie.backdrop_path === null ) return false;
+      {
+        loader? 
+        <>
+          <div>
+            <h3>
+              { selectedGenre }
+            </h3>
+            <h4>
+              { findWords && <span>keyWord: </span> }
+              <span>{ findWords }</span>
+            </h4>
+            <StyledMovieLists>
+              {movies.map((movie, index) => {
+                movie.liked = false;
+                if (movie.title === noResults ) {
+                  return <h5 key={index} className="no-results">検索結果はありません</h5>
+                }
+                if ( movie.backdrop_path === null ) return false;
 
-            return (
-              <StyledMovieList key={index}>
-                <ThumbnailCard 
-                  id={movie?.id}
-                  src={movie?.backdrop_path}
-                  title={movie.title}
-                  onFocus={(event) => getMovieDetail(event.currentTarget.dataset.movie_id)}
-                  onError={ (event:any) => event.target.src = `${process.env.PUBLIC_URL}/noImage.png` }
-                />
-              </StyledMovieList>
-            )
-          })}
-          { movies.length === 0 && <h5 className="no-results">検索結果はありません</h5> }
-        </StyledMovieLists>
-      </div>
-      
-      {isOpenModal &&
-        <Modal
-          isOpen={isOpenModal}
-          type={"iframe"}
-          keys={movieVideoKeys}
-          onClose={setIsOpenModal}
-          eventBubble={(event) => event.stopPropagation }
-        />
+                return (
+                  <StyledMovieList key={index}>
+                    <ThumbnailCard 
+                      id={movie?.id}
+                      src={movie?.backdrop_path}
+                      title={movie.title}
+                      onFocus={(event) => getMovieDetail(event.currentTarget.dataset.movie_id)}
+                      onError={ (event:any) => event.target.src = `${process.env.PUBLIC_URL}/noImage.png` }
+                    />
+                  </StyledMovieList>
+                )
+              })}
+              { movies.length === 0 && <h5 className="no-results">検索結果はありません</h5> }
+            </StyledMovieLists>
+          </div>
+          
+          {isOpenModal &&
+            <Modal
+              isOpen={isOpenModal}
+              type={"iframe"}
+              keys={movieVideoKeys}
+              onClose={setIsOpenModal}
+              eventBubble={(event) => event.stopPropagation }
+            />
+          }
+        </>
+        :
+        <Loader>
+          <img src={`${process.env.PUBLIC_URL}/loader.gif`} alt="...loader" />
+          <p>...loading</p>
+        </Loader>
       }
     </StyledMainWrapper>
   );
@@ -211,4 +222,15 @@ const StyledMovieLists = styled.ul`
 const StyledMovieList = styled.li`
   width: 32.3%;
   padding: 0 3px;
+`;
+
+const Loader = styled.div`
+  width: 10%;
+  display: block;
+  margin: 0 auto;
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translateX(-50%) translateY(-50%);
+  text-align: center;
 `;
