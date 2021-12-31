@@ -66,7 +66,6 @@ const StyledPlayButton = styled.button`
     font-size: 14px;
     line-height: 1.3;
 }
-  }
   &:hover {
     opacity: 0.7;
   }
