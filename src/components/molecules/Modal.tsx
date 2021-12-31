@@ -3,6 +3,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick"
 import styled from 'styled-components';
+import { HiX } from "@react-icons/all-files/hi/HiX"; 
 
 type ModalProps = {
   isOpen: boolean;
@@ -33,7 +34,10 @@ export const Modal = (props: ModalProps) => {
     <StyleModalOverlay>
       { type === "iframe" &&
         <StyledModal>
-          <button onClick={() => onClose(!isOpen)}>close</button>
+
+          <HiX onClick={() => onClose(!isOpen)} 
+                size={30} color={'#ccc'} 
+          />
           <Slider {...settings}>
             { keyValues.map((val:KeyProps, index:number) => (
               <div key={index} onClick={eventBubble}>

@@ -1,4 +1,5 @@
 import styled from 'styled-components'
+import { FiPlay } from "@react-icons/all-files/fi/FiPlay"
 
 type ThumbnailCardProps = {
   id: number;
@@ -14,11 +15,16 @@ export const ThumbnailCard = (props:ThumbnailCardProps) => {
 
   return (
     <StyledThumbnailCard>
-      <StyledThumbnailImage loading='lazy' src={`${basePosterUrl}${src}`} alt={title} onError={onError}/>
-      <StyledThumbnailCaption>
-        <StyledThumbnailTitle>{title}</StyledThumbnailTitle>
-        <div data-movie_id={id} onClick={onFocus}>play</div>
-      </StyledThumbnailCaption>
+      <div style={{ position: 'relative' }}>
+        <StyledThumbnailImage loading='lazy' src={`${basePosterUrl}${src}`} alt={title} onError={onError}/>
+        <StyledPlayButton data-movie_id={id} onClick={onFocus}>
+          <FiPlay size={16} color={'#708090'} />
+          <p>予告編</p>
+        </StyledPlayButton>
+      </div>
+        <StyledThumbnailCaption>
+          <StyledThumbnailTitle>{title}</StyledThumbnailTitle>
+        </StyledThumbnailCaption>
     </StyledThumbnailCard>
   )
 }
@@ -37,4 +43,31 @@ const StyledThumbnailCaption = styled.figcaption`
 
 const StyledThumbnailTitle = styled.dd`
   font-weight: bold;
+  margin: 0 auto 10px;
+`;
+
+const StyledPlayButton = styled.button`
+  position: absolute;
+  right: 4px;
+  bottom: 10px;
+  display: flex;
+  align-items: center;
+  outline: none;
+  border: none;
+  appearance: none;
+  background: #f5f5f5;
+  cursor: pointer;
+  color: #708090;
+  border-radius: 6px;
+
+  p {
+    margin: 0;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 1.3;
+}
+  }
+  &:hover {
+    opacity: 0.7;
+  }
 `;
