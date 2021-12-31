@@ -14,7 +14,7 @@ export const ThumbnailCard = (props:ThumbnailCardProps) => {
 
   return (
     <StyledThumbnailCard>
-      <StyledThumbnailImage src={`${basePosterUrl}${src}`} alt={title} onError={onError}/>
+      <StyledThumbnailImage loading='lazy' src={`${basePosterUrl}${src}`} alt={title} onError={onError}/>
       <StyledThumbnailCaption>
         <StyledThumbnailTitle>{title}</StyledThumbnailTitle>
         <div data-movie_id={id} onClick={onFocus}>play</div>
