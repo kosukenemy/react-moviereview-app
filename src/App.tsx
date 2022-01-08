@@ -13,7 +13,7 @@ import { Modal } from './components/molecules/Modal';
 import styled from 'styled-components';
 
 type initialGenre = {
-  [key: string]: any;
+  [key: string]: number | any;
 };
 
 type Genre = {
@@ -36,6 +36,7 @@ type Movie = {
 };
 
 
+
 function App() {
   const [loader, setLoader] = useState<boolean>(false);
   const initialGenreName:initialGenre = { Action: 28 };
@@ -46,7 +47,7 @@ function App() {
   const [activeTab, setActiveTab] = useState<string>("Action");
   const [inputValue, setInputValue] = useState<string>("");
   const [findWords, setFindWords] = useState<string>("");
-  const [movieDetail, setMovieDetail] = useState<any>([] || null);
+  const [movieDetail, setMovieDetail] = useState<Movie[] | any>([]);
   const [isOpenModal, setIsOpenModal] = useState(false);
   const movieVideoKeys:string[] | undefined = [];
   const noResults = "UNdefined";
@@ -58,7 +59,7 @@ function App() {
   const fetchAPI = async() => {
     setGenres( await getMovieGenres());
     setMovies( await getGenresQueryMovie(initialGenreId.type));
-    setLoader(!loader)
+    setLoader(!loader);
   }
 
   const handleGenreButton = async(event:React.MouseEvent<HTMLButtonElement>) => {
@@ -101,12 +102,13 @@ function App() {
     clearInputValue();
   }
 
-  const getMovieDetail = async(thumbnailId:any) => {
+  const getMovieDetail = async(thumbnailId: string) => {
     setIsOpenModal(!isOpenModal);
     setMovieDetail( await getMovieDetails(thumbnailId));
   }
 
   if ( movieDetail.hasOwnProperty("videos") ) {
+    console.log(movieDetail)
     movieVideoKeys.push(movieDetail.videos.results);
   }
 
@@ -164,7 +166,7 @@ function App() {
               <span>{ findWords }</span>
             </h4>
             <StyledMovieLists>
-              {movies.map((movie, index) => {
+              { movies.map((movie, index) => {
                 movie.liked = false;
                 if (movie.title === noResults ) {
                   return <h5 key={index} className="no-results">検索結果はありません</h5>
@@ -177,7 +179,7 @@ function App() {
                       id={movie?.id}
                       src={movie?.backdrop_path}
                       title={movie.title}
-                      onFocus={(event) => getMovieDetail(event.currentTarget.dataset.movie_id)}
+                      onFocus={(event) => getMovieDetail(event.currentTarget.dataset.movie_id as string )}
                       onError={ (event:any) => event.target.src = `${process.env.PUBLIC_URL}/noImage.png` }
                     />
                   </StyledMovieList>
